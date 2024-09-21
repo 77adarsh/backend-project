@@ -1,6 +1,4 @@
 import { v2 as cloudinary } from "cloudinary"
-import { response } from "express";
-
 import fs from "fs"
 
 
@@ -18,12 +16,14 @@ const uploadOnCloudinary = async (localFilePath) => {
             resource_type: "auto"
         })
         // file has been uploaded successfully
-        console.log("File is uploaded on the cloudinary", response.url);
+        // console.log("File is uploaded on the cloudinary", response.url);
+        fs.unlinkSync(localFilePath)
         return response;
     }
     catch (error) {
+        console.error("Cloudinary upload error:", error); // Log the exact error
         fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the operate operation get failed
-        return null;
+        throw new Error("Failed to upload avatar to Cloudinary");
     }
 }
 
